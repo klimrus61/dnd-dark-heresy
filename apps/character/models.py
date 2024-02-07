@@ -72,3 +72,11 @@ class Character(models.Model):
     planet_class = models.ForeignKey()
 
     divination = models.ForeignKey()
+
+
+class Talent(models.Model):
+    name = models.CharField(max_length=255)
+    prerequisites = models.TextField(blank=True)
+    benefit = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    group = models.CharField(max_length=255)
