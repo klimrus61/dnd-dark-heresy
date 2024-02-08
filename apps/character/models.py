@@ -5,23 +5,84 @@ from django.utils.translation import gettext as _
 User = get_user_model()
 
 
+class HomeWorld(models.Model):
+    name = models.CharField(max_length=64)
+    description = models.TextField(blank=True)
+    life_description = models.TextField(blank=True)
+    pc_description = models.TextField(blank=True)
+    skills = models.ManyToManyField(
+
+    )
+    traits = models.ManyToManyField(
+
+    )
+    careers = models.ManyToManyField(
+
+    )
+
+
+class Characteristic(models.Model):
+    class CharacteristicType(models.TextChoices):
+        WEAPON_SKILL = "WS", _("Weapon skill")
+        BALLISTIC_SKILL = "BS", _("Ballistic skill")
+        STRENGTH = "S", _("Strength")
+        TOUGHNESS = "T", _("Toughness")
+        AGILITY = "Ag", _("Agility")
+        INTELLIGENCE = "Int", _("Intelligence")
+        PERCEPTION = "Per", _("Perception")
+        WILLPOWER = "WP", _("Willpower")
+        FELLOWSHIP = "Fel", _("Fellowship")
+
+    name = models.CharField(max_length=4, choices=CharacteristicType)
+
+
+class CharacterCharacteristic(models.Model):
+    characteristic = models.ForeignKey(
+        "Characteristic",
+        on_delete=models.CASCADE,
+    )
+    character = models.ForeignKey(
+        "Character",
+        on_delete=models.CASCADE,
+    )
+    value = models.IntegerField()
+
+
+class Career(models.Model):
+    name = models.CharField(max_length=64)
+
+
+class Talent(models.Model):
+    name = models.CharField(max_length=255)
+    prerequisites = models.TextField(blank=True)
+    benefit = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    group = models.CharField(max_length=255)
+
+
 class Character(models.Model):
     name = models.CharField(max_length=64)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     home_world = models.ForeignKey(
-
+        "HomeWorld",
+        on_delete=models.CASCADE,
+        related_name="characters",
     )
 
     # Characteristics
-    weapon_skill = models.IntegerField()
-    ballistic_skill = models.IntegerField()
-    strength = models.IntegerField()
-    toughness = models.IntegerField()
-    agility = models.IntegerField()
-    intelligence = models.IntegerField()
-    perception = models.IntegerField()
-    willpower = models.IntegerField()
-    fellowship = models.IntegerField()
+    characteristics = models.ManyToManyField(
+        'Characteristic',
+        through=CharacterCharacteristic,
+    )
+    # weapon_skill = models.IntegerField()
+    # ballistic_skill = models.IntegerField()
+    # strength = models.IntegerField()
+    # toughness = models.IntegerField()
+    # agility = models.IntegerField()
+    # intelligence = models.IntegerField()
+    # perception = models.IntegerField()
+    # willpower = models.IntegerField()
+    # fellowship = models.IntegerField()
 
     # Career
     career_path = models.ForeignKey(
@@ -73,10 +134,3 @@ class Character(models.Model):
 
     divination = models.ForeignKey()
 
-
-class Talent(models.Model):
-    name = models.CharField(max_length=255)
-    prerequisites = models.TextField(blank=True)
-    benefit = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    group = models.CharField(max_length=255)
