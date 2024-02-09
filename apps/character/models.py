@@ -5,22 +5,6 @@ from django.utils.translation import gettext as _
 User = get_user_model()
 
 
-class HomeWorld(models.Model):
-    name = models.CharField(max_length=64)
-    description = models.TextField(blank=True)
-    life_description = models.TextField(blank=True)
-    pc_description = models.TextField(blank=True)
-    skills = models.ManyToManyField(
-
-    )
-    traits = models.ManyToManyField(
-
-    )
-    careers = models.ManyToManyField(
-
-    )
-
-
 class Characteristic(models.Model):
     class CharacteristicType(models.TextChoices):
         WEAPON_SKILL = "WS", _("Weapon skill")
@@ -48,6 +32,22 @@ class CharacterCharacteristic(models.Model):
     value = models.IntegerField()
 
 
+class Skill(models.Model):
+    class SkillType(models.TextChoices):
+        BASIC = "BASIC", _("Basic")
+        ADVANCED = "ADVANCED", _("Advanced")
+
+    name = models.CharField(max_length=64)
+    type = models.CharField(max_length=64, choices=SkillType)
+    characteristic = models.ForeignKey(
+        "Characteristic",
+        on_delete=models.CASCADE,
+        related_name="skills",
+    )
+    descriptor = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+
 class Career(models.Model):
     name = models.CharField(max_length=64)
 
@@ -58,6 +58,22 @@ class Talent(models.Model):
     benefit = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     group = models.CharField(max_length=255)
+
+
+class HomeWorld(models.Model):
+    name = models.CharField(max_length=64)
+    description = models.TextField(blank=True)
+    life_description = models.TextField(blank=True)
+    pc_description = models.TextField(blank=True)
+    skills = models.ManyToManyField(
+        "Skill",
+    )
+    traits = models.ManyToManyField(
+
+    )
+    careers = models.ManyToManyField(
+
+    )
 
 
 class Character(models.Model):
