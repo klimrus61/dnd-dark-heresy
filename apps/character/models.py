@@ -48,8 +48,42 @@ class Skill(models.Model):
     description = models.TextField(null=True, blank=True)
 
 
-class Career(models.Model):
+class Trait(models.Model):
     name = models.CharField(max_length=64)
+    description = models.TextField(blank=True)
+    full_description = models.TextField(blank=True)
+
+
+class CareerPath(models.Model):
+    name = models.CharField(max_length=64)
+    description = models.TextField(blank=True)
+    starting_skills = models.ManyToManyField(
+        "Skill"
+    )
+    starting_talents = models.ManyToManyField(
+        "Talent"
+    )
+    starting_gears = models.ManyToManyField(
+        "Gear"
+    )
+    starting_traits = models.ManyToManyField(
+        "Trait"
+    )
+
+
+class CareerRank(models.Model):
+    name = models.CharField(max_length=64)
+    description = models.TextField(blank=True)
+    career_path = models.ForeignKey(
+        "CareerPath",
+        on_delete=models.CASCADE,
+        related_name="ranks",
+    )
+    min_xp = models.IntegerField()
+    max_xp = models.IntegerField()
+    rank_level = models.IntegerField()
+
+
 
 
 class Talent(models.Model):
@@ -69,26 +103,37 @@ class HomeWorld(models.Model):
         "Skill",
     )
     traits = models.ManyToManyField(
-
+        "Trait",
     )
     careers = models.ManyToManyField(
-
+        "CareerPath"
     )
 
+
+class PlanetClass(models.Model):
+    """
+    A planet-class represents a previous activity of character
+    """
+    name = models.CharField(max_length=64)
+    description = models.TextField(blank=True)
 
 class Character(models.Model):
     name = models.CharField(max_length=64)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
     home_world = models.ForeignKey(
         "HomeWorld",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="characters",
+        null=True,
+        blank=True,
     )
 
     # Characteristics
     characteristics = models.ManyToManyField(
         'Characteristic',
         through=CharacterCharacteristic,
+        null=True,
+        blank=True,
     )
     # weapon_skill = models.IntegerField()
     # ballistic_skill = models.IntegerField()
@@ -102,51 +147,112 @@ class Character(models.Model):
 
     # Career
     career_path = models.ForeignKey(
-
+        "CareerPath",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
-    # for psyker
-    sanctioning_side_effect = models.ForeignKey(
 
-    )
 
     skills = models.ManyToManyField(
         "Skill",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     talents = models.ManyToManyField(
         "Talent",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     gears = models.ManyToManyField(
         "Gear",
         verbose_name=_("Equipments"),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
-    rank = models.ForeignKey(
-        "Rank",
+    ranks = models.ManyToManyField(
+        "CareerRank",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
     traits = models.ManyToManyField(
         "Trait",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
     )
-    wound = models.IntegerField(verbose_name="HP")
-    fate_point = models.IntegerField(verbose_name=_("Fate Points"))
-    wealth = models.IntegerField(verbose_name=_("Initial capital"))
+    wound = models.IntegerField(verbose_name="HP", null=True, blank=True)
+    fate_point = models.IntegerField(verbose_name=_("Fate Points"), null=True, blank=True)
+    wealth = models.IntegerField(verbose_name=_("Initial capital"), null=True, blank=True)
 
     # body
-    sex = models.CharField(max_length=1, blank=True)
+    sex = models.CharField(max_length=32, blank=True)
     age = models.IntegerField(null=True, blank=True)
     hair_color = models.CharField(max_length=32, blank=True)
     eye_color = models.CharField(max_length=32, blank=True)
     skin_color = models.CharField(max_length=32, blank=True)
-    quirks = models.ManyToManyField()
+    quirks = models.ManyToManyField(
+        "Quirks",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     # armour
-    armour_head = models.ForeignKey()
-    armour_body = models.ForeignKey()
-    armour_left_arm = models.ForeignKey()
-    armour_right_arm = models.ForeignKey()
-    armour_left_leg = models.ForeignKey()
-    armour_right_leg = models.ForeignKey()
+    armour_head = models.ForeignKey(
+        "Gear",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    armour_body = models.ForeignKey(
+        "Gear",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    armour_left_arm = models.ForeignKey(
+        "Gear",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    armour_right_arm = models.ForeignKey(
+        "Gear",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    armour_left_leg = models.ForeignKey(
+        "Gear",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
+    armour_right_leg = models.ForeignKey(
+        "Gear",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     # class
-    planet_class = models.ForeignKey()
+    planet_class = models.ForeignKey(
+        "PlanetClass",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
-    divination = models.ForeignKey()
+    divination = models.ForeignKey(
+        "Divination",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Imperial Divination")
+    )
 
