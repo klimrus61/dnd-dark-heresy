@@ -290,4 +290,4 @@ class Character(models.Model):
     )
 
     class Meta:
-        db_table = "home_world"
+        db_table = "homeworld"
