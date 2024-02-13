@@ -32,6 +32,23 @@ class CharacterCharacteristic(models.Model):
     value = models.IntegerField()
 
 
+class Divination(models.Model):
+    name = models.CharField(max_length=255)
+
+
+class Mutation(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+
+class Quirk(models.Model):
+    name = models.CharField(max_length=255)
+    home_world = models.ForeignKey(
+        "HomeWorld",
+        on_delete=models.CASCADE
+    )
+
+
 class Skill(models.Model):
     class SkillType(models.TextChoices):
         BASIC = "BASIC", _("Basic")
@@ -84,6 +101,8 @@ class CareerRank(models.Model):
     rank_level = models.IntegerField()
 
 
+class Gear(models.Model):
+    name = models.CharField(max_length=255)
 
 
 class Talent(models.Model):
@@ -105,17 +124,23 @@ class HomeWorld(models.Model):
     traits = models.ManyToManyField(
         "Trait",
     )
-    careers = models.ManyToManyField(
-        "CareerPath"
+    career_paths = models.ManyToManyField(
+        "CareerPath",
+        db_table="career_paths"
     )
 
 
-class PlanetClass(models.Model):
+class HomeWorldClass(models.Model):
     """
     A planet-class represents a previous activity of character
     """
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
+    home_world = models.ForeignKey(
+        "HomeWorld",
+        on_delete=models.CASCADE,
+        related_name="classes",
+    )
 
 class Character(models.Model):
     name = models.CharField(max_length=64)
@@ -196,7 +221,7 @@ class Character(models.Model):
     eye_color = models.CharField(max_length=32, blank=True)
     skin_color = models.CharField(max_length=32, blank=True)
     quirks = models.ManyToManyField(
-        "Quirks",
+        "Quirk",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -241,11 +266,12 @@ class Character(models.Model):
     )
 
     # class
-    planet_class = models.ForeignKey(
-        "PlanetClass",
+    home_world_class = models.ForeignKey(
+        "HomeWorldClass",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
+        verbose_name=_("Home World Class")
     )
 
     divination = models.ForeignKey(
@@ -256,3 +282,10 @@ class Character(models.Model):
         verbose_name=_("Imperial Divination")
     )
 
+    mutations = models.ManyToManyField(
+        "Mutation",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name=_("Mutations"),
+    )
