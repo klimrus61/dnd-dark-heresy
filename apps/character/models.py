@@ -31,6 +31,9 @@ class CharacterCharacteristic(models.Model):
     )
     value = models.IntegerField()
 
+    class Meta:
+        db_table = "character_characteristic"
+
 
 class Divination(models.Model):
     name = models.CharField(max_length=255)
@@ -45,7 +48,8 @@ class Quirk(models.Model):
     name = models.CharField(max_length=255)
     home_world = models.ForeignKey(
         "HomeWorld",
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="quirks"
     )
 
 
@@ -75,16 +79,21 @@ class CareerPath(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
     starting_skills = models.ManyToManyField(
-        "Skill"
+        "Skill",
+        db_table="career_start_skill",
     )
     starting_talents = models.ManyToManyField(
-        "Talent"
+        "Talent",
+        db_table = "career_start_talent",
+
     )
     starting_gears = models.ManyToManyField(
-        "Gear"
+        "Gear",
+        db_table="career_start_gear",
     )
     starting_traits = models.ManyToManyField(
-        "Trait"
+        "Trait",
+        db_table = "career_start_trait",
     )
 
 
@@ -120,13 +129,15 @@ class HomeWorld(models.Model):
     pc_description = models.TextField(blank=True)
     skills = models.ManyToManyField(
         "Skill",
+        db_table = "homeworld_skill"
     )
     traits = models.ManyToManyField(
         "Trait",
+        db_table = "homeworld_trait"
     )
     career_paths = models.ManyToManyField(
         "CareerPath",
-        db_table="career_paths"
+        db_table="homeworld_career_path"
     )
 
 
@@ -157,6 +168,7 @@ class Character(models.Model):
     characteristics = models.ManyToManyField(
         'Characteristic',
         through=CharacterCharacteristic,
+        through_fields=('characteristic', 'character'),
         null=True,
         blank=True,
     )
@@ -181,18 +193,21 @@ class Character(models.Model):
 
     skills = models.ManyToManyField(
         "Skill",
+        db_table="character_skill",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     talents = models.ManyToManyField(
         "Talent",
+        db_table="character_talent",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     gears = models.ManyToManyField(
         "Gear",
+        db_table="character_gear",
         verbose_name=_("Equipments"),
         on_delete=models.SET_NULL,
         null=True,
@@ -200,12 +215,14 @@ class Character(models.Model):
     )
     ranks = models.ManyToManyField(
         "CareerRank",
+        db_table="character_rank",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
     )
     traits = models.ManyToManyField(
         "Trait",
+        db_table="character_trait",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -222,6 +239,7 @@ class Character(models.Model):
     skin_color = models.CharField(max_length=32, blank=True)
     quirks = models.ManyToManyField(
         "Quirk",
+        db_table="character_quirk",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -284,6 +302,7 @@ class Character(models.Model):
 
     mutations = models.ManyToManyField(
         "Mutation",
+        db_table="character_mutation",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
