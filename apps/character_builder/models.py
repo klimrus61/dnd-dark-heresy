@@ -2,28 +2,17 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
+from apps.character_builder.enums import CharacteristicType
+
+
 User = get_user_model()
 
 
-class Characteristic(models.Model):
-    class CharacteristicType(models.TextChoices):
-        WEAPON_SKILL = "WS", _("Weapon skill")
-        BALLISTIC_SKILL = "BS", _("Ballistic skill")
-        STRENGTH = "S", _("Strength")
-        TOUGHNESS = "T", _("Toughness")
-        AGILITY = "Ag", _("Agility")
-        INTELLIGENCE = "Int", _("Intelligence")
-        PERCEPTION = "Per", _("Perception")
-        WILLPOWER = "WP", _("Willpower")
-        FELLOWSHIP = "Fel", _("Fellowship")
-
-    name = models.CharField(max_length=4, choices=CharacteristicType)
-
-
 class CharacterCharacteristic(models.Model):
-    characteristic = models.ForeignKey(
-        "Characteristic",
-        on_delete=models.CASCADE,
+    characteristic = models.CharField(
+        max_length=4,
+        choices=CharacteristicType.choices,
+        unique=True
     )
     character = models.ForeignKey(
         "Character",
@@ -38,10 +27,16 @@ class CharacterCharacteristic(models.Model):
 class Divination(models.Model):
     name = models.CharField(max_length=255)
 
+    class Meta:
+        db_table = "divination"
+
 
 class Mutation(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+
+    class Meta:
+        db_table = "mutation"
 
 
 class Quirk(models.Model):
@@ -52,6 +47,9 @@ class Quirk(models.Model):
         related_name="quirks"
     )
 
+    class Meta:
+        db_table = "quirk"
+
 
 class Skill(models.Model):
     class SkillType(models.TextChoices):
@@ -60,19 +58,25 @@ class Skill(models.Model):
 
     name = models.CharField(max_length=64)
     type = models.CharField(max_length=64, choices=SkillType)
-    characteristic = models.ForeignKey(
-        "Characteristic",
-        on_delete=models.CASCADE,
-        related_name="skills",
+    characteristic = models.CharField(
+        max_length=4,
+        choices=CharacteristicType.choices,
+        unique=True
     )
     descriptor = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        db_table = "skill"
 
 
 class Trait(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
     full_description = models.TextField(blank=True)
+
+    class Meta:
+        db_table = "trait"
 
 
 class CareerPath(models.Model):
@@ -96,6 +100,9 @@ class CareerPath(models.Model):
         db_table = "career_start_trait",
     )
 
+    class Meta:
+        db_table = "career_path"
+
 
 class CareerRank(models.Model):
     name = models.CharField(max_length=64)
@@ -109,9 +116,15 @@ class CareerRank(models.Model):
     max_xp = models.IntegerField()
     rank_level = models.IntegerField()
 
+    class Meta:
+        db_table = "career_rank"
+
 
 class Gear(models.Model):
     name = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = "gear"
 
 
 class Talent(models.Model):
@@ -119,7 +132,10 @@ class Talent(models.Model):
     prerequisites = models.TextField(blank=True)
     benefit = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    group = models.CharField(max_length=255)
+    group = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        db_table = "talent"
 
 
 class HomeWorld(models.Model):
@@ -153,6 +169,21 @@ class HomeWorldClass(models.Model):
         related_name="classes",
     )
 
+
+class Armour(models.Model):
+    class ArmourType(models.TextChoices):
+        HEAD = "HEAD", _("Head armour")
+        BODY = "BODY", _("Body armour")
+        LEFT_ARM = "LEFT_ARM", _("Left arm armour")
+        RIGHT_ARM = "RIGHT_ARM", _("Right arm armour")
+        LEFT_LEG = "LEFT_LEG", _("Left leg armour")
+        RIGHT_LEG = "RIGHT_LEG", _("Right leg armour")
+
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    type = models.TextField(choices=ArmourType.choices)
+
+
 class Character(models.Model):
     name = models.CharField(max_length=64)
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -165,13 +196,7 @@ class Character(models.Model):
     )
 
     # Characteristics
-    characteristics = models.ManyToManyField(
-        'Characteristic',
-        through=CharacterCharacteristic,
-        through_fields=('characteristic', 'character'),
-        null=True,
-        blank=True,
-    )
+
     # weapon_skill = models.IntegerField()
     # ballistic_skill = models.IntegerField()
     # strength = models.IntegerField()
@@ -194,37 +219,27 @@ class Character(models.Model):
     skills = models.ManyToManyField(
         "Skill",
         db_table="character_skill",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
     )
     talents = models.ManyToManyField(
         "Talent",
         db_table="character_talent",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
     )
     gears = models.ManyToManyField(
         "Gear",
         db_table="character_gear",
         verbose_name=_("Equipments"),
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
     )
     ranks = models.ManyToManyField(
         "CareerRank",
         db_table="character_rank",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
     )
     traits = models.ManyToManyField(
         "Trait",
         db_table="character_trait",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
     )
     wound = models.IntegerField(verbose_name="HP", null=True, blank=True)
@@ -240,46 +255,13 @@ class Character(models.Model):
     quirks = models.ManyToManyField(
         "Quirk",
         db_table="character_quirk",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
     )
 
     # armour
-    armour_head = models.ForeignKey(
-        "Gear",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    armour_body = models.ForeignKey(
-        "Gear",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    armour_left_arm = models.ForeignKey(
-        "Gear",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    armour_right_arm = models.ForeignKey(
-        "Gear",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    armour_left_leg = models.ForeignKey(
-        "Gear",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    armour_right_leg = models.ForeignKey(
-        "Gear",
-        on_delete=models.SET_NULL,
-        null=True,
+    armours = models.ManyToManyField(
+        "Armour",
+        db_table="character_armour",
         blank=True,
     )
 
@@ -303,8 +285,9 @@ class Character(models.Model):
     mutations = models.ManyToManyField(
         "Mutation",
         db_table="character_mutation",
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
         verbose_name=_("Mutations"),
     )
+
+    class Meta:
+        db_table = "home_world"
