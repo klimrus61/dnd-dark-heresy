@@ -20,12 +20,18 @@ class CharacterCharacteristic(models.Model):
     )
     value = models.IntegerField()
 
+    def __str__(self):
+        return f"{self.characteristic}"
+
     class Meta:
         db_table = "character_characteristic"
 
 
 class Divination(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "divination"
@@ -34,6 +40,9 @@ class Divination(models.Model):
 class Mutation(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "mutation"
@@ -46,6 +55,9 @@ class Quirk(models.Model):
         on_delete=models.CASCADE,
         related_name="quirks"
     )
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "quirk"
@@ -66,6 +78,9 @@ class Skill(models.Model):
     descriptor = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = "skill"
 
@@ -74,6 +89,9 @@ class Trait(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
     full_description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "trait"
@@ -100,6 +118,9 @@ class CareerPath(models.Model):
         db_table = "career_start_trait",
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = "career_path"
 
@@ -116,12 +137,18 @@ class CareerRank(models.Model):
     max_xp = models.IntegerField()
     rank_level = models.IntegerField()
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = "career_rank"
 
 
 class Gear(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "gear"
@@ -133,6 +160,9 @@ class Talent(models.Model):
     benefit = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     group = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = "talent"
@@ -156,6 +186,12 @@ class HomeWorld(models.Model):
         db_table="homeworld_career_path"
     )
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "homeworld"
+
 
 class HomeWorldClass(models.Model):
     """
@@ -168,6 +204,12 @@ class HomeWorldClass(models.Model):
         on_delete=models.CASCADE,
         related_name="classes",
     )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "homeworld_class"
 
 
 class Armour(models.Model):
@@ -182,6 +224,12 @@ class Armour(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     type = models.TextField(choices=ArmourType.choices)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "armour"
 
 
 class Character(models.Model):
@@ -289,5 +337,8 @@ class Character(models.Model):
         verbose_name=_("Mutations"),
     )
 
+    def __str__(self):
+        return self.name
+
     class Meta:
-        db_table = "homeworld"
+        db_table = "character"
