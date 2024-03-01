@@ -32,18 +32,18 @@
                         <a class="nav-link" href="#">Resumes</a>
                     </li>
                 </ul>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'resume_profiles' %}" class="link-dark">{{ user.get_username }}</a>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button class="btn btn-outline-success mx-2" type="submit">logout</button>
-                    </form>
-                {% else %}
-                    <div class="btn-group">
-                        <a href="{% url 'register' %}" class="btn btn-outline-success" role="button">Sing up</a>
-                        <a href="{% url 'login' %}" class="btn btn-outline-success" role="button">Sing in</a>
-                    </div>
-                {% endif %}
+{#                {% if user.is_authenticated %}#}
+{#                    <a href="{% url 'resume_profiles' %}" class="link-dark">{{ user.get_username }}</a>#}
+{#                    <form method="post" action="{% url 'logout' %}">#}
+{#                        {% csrf_token %}#}
+{#                        <button class="btn btn-outline-success mx-2" type="submit">logout</button>#}
+{#                    </form>#}
+{#                {% else %}#}
+{#                    <div class="btn-group">#}
+{#                        <a href="{% url 'register' %}" class="btn btn-outline-success" role="button">Sing up</a>#}
+{#                        <a href="{% url 'login' %}" class="btn btn-outline-success" role="button">Sing in</a>#}
+{#                    </div>#}
+{#                {% endif %}#}
             </div>
         </div>
     </nav>

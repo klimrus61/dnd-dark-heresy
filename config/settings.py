@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "apps.character_builder",
+    "apps.character",
 ]
 
 MIDDLEWARE = [

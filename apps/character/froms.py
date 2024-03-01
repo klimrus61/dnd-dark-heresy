@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.character_builder.models import Character
+from apps.character.models import Character
 
 
 class CharacterForm(forms.ModelForm):

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
-from apps.character_builder.enums import CharacteristicType
+from apps.character.enums import CharacteristicType
 
 
 User = get_user_model()

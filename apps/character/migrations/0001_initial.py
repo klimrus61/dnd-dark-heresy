@@ -223,7 +223,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="ranks",
-                        to="character_builder.careerpath",
+                        to="character.careerpath",
                     ),
                 ),
             ],
@@ -270,7 +270,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         db_table="character_armour",
-                        to="character_builder.armour",
+                        to="character.armour",
                     ),
                 ),
                 (
@@ -279,7 +279,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="character_builder.careerpath",
+                        to="character.careerpath",
                     ),
                 ),
                 (
@@ -287,7 +287,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         db_table="character_rank",
-                        to="character_builder.careerrank",
+                        to="character.careerrank",
                     ),
                 ),
                 (
@@ -296,7 +296,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="character_builder.divination",
+                        to="character.divination",
                         verbose_name="Imperial Divination",
                     ),
                 ),
@@ -305,7 +305,7 @@ class Migration(migrations.Migration):
                     models.ManyToManyField(
                         blank=True,
                         db_table="character_gear",
-                        to="character_builder.gear",
+                        to="character.gear",
                         verbose_name="Equipments",
                     ),
                 ),
@@ -349,7 +349,7 @@ class Migration(migrations.Migration):
                     "character",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="character_builder.character",
+                        to="character.character",
                     ),
                 ),
             ],
@@ -361,7 +361,7 @@ class Migration(migrations.Migration):
             model_name="careerpath",
             name="starting_gears",
             field=models.ManyToManyField(
-                db_table="career_start_gear", to="character_builder.gear"
+                db_table="career_start_gear", to="character.gear"
             ),
         ),
         migrations.CreateModel(
@@ -384,19 +384,19 @@ class Migration(migrations.Migration):
                     "career_paths",
                     models.ManyToManyField(
                         db_table="homeworld_career_path",
-                        to="character_builder.careerpath",
+                        to="character.careerpath",
                     ),
                 ),
                 (
                     "skills",
                     models.ManyToManyField(
-                        db_table="homeworld_skill", to="character_builder.skill"
+                        db_table="homeworld_skill", to="character.skill"
                     ),
                 ),
                 (
                     "traits",
                     models.ManyToManyField(
-                        db_table="homeworld_trait", to="character_builder.trait"
+                        db_table="homeworld_trait", to="character.trait"
                     ),
                 ),
             ],
@@ -409,7 +409,7 @@ class Migration(migrations.Migration):
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="characters",
-                to="character_builder.homeworld",
+                to="character.homeworld",
             ),
         ),
         migrations.CreateModel(
@@ -431,7 +431,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="classes",
-                        to="character_builder.homeworld",
+                        to="character.homeworld",
                     ),
                 ),
             ],
@@ -443,7 +443,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
-                to="character_builder.homeworldclass",
+                to="character.homeworldclass",
                 verbose_name="Home World Class",
             ),
         ),
@@ -453,7 +453,7 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(
                 blank=True,
                 db_table="character_mutation",
-                to="character_builder.mutation",
+                to="character.mutation",
                 verbose_name="Mutations",
             ),
         ),
@@ -475,7 +475,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="quirks",
-                        to="character_builder.homeworld",
+                        to="character.homeworld",
                     ),
                 ),
             ],
@@ -487,49 +487,49 @@ class Migration(migrations.Migration):
             model_name="character",
             name="quirks",
             field=models.ManyToManyField(
-                blank=True, db_table="character_quirk", to="character_builder.quirk"
+                blank=True, db_table="character_quirk", to="character.quirk"
             ),
         ),
         migrations.AddField(
             model_name="character",
             name="skills",
             field=models.ManyToManyField(
-                blank=True, db_table="character_skill", to="character_builder.skill"
+                blank=True, db_table="character_skill", to="character.skill"
             ),
         ),
         migrations.AddField(
             model_name="careerpath",
             name="starting_skills",
             field=models.ManyToManyField(
-                db_table="career_start_skill", to="character_builder.skill"
+                db_table="career_start_skill", to="character.skill"
             ),
         ),
         migrations.AddField(
             model_name="character",
             name="talents",
             field=models.ManyToManyField(
-                blank=True, db_table="character_talent", to="character_builder.talent"
+                blank=True, db_table="character_talent", to="character.talent"
             ),
         ),
         migrations.AddField(
             model_name="careerpath",
             name="starting_talents",
             field=models.ManyToManyField(
-                db_table="career_start_talent", to="character_builder.talent"
+                db_table="career_start_talent", to="character.talent"
             ),
         ),
         migrations.AddField(
             model_name="character",
             name="traits",
             field=models.ManyToManyField(
-                blank=True, db_table="character_trait", to="character_builder.trait"
+                blank=True, db_table="character_trait", to="character.trait"
             ),
         ),
         migrations.AddField(
             model_name="careerpath",
             name="starting_traits",
             field=models.ManyToManyField(
-                db_table="career_start_trait", to="character_builder.trait"
+                db_table="career_start_trait", to="character.trait"
             ),
         ),
     ]
