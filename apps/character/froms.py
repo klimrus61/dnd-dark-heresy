@@ -6,9 +6,14 @@ from apps.character.models import Character
 class CharacterForm(forms.ModelForm):
     class Meta:
         model = Character
-        fields = ['name',]
+        fields = [
+            "name",
+        ]
+
 
 class ChooseHomeWorldFrom(forms.ModelForm):
     class Meta:
         model = Character
-        fields = ['home_world',]
+        fields = [
+            "home_world",
+        ]

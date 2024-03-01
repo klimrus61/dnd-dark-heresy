@@ -1,19 +1,16 @@
-from django.db import models
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 
 from apps.character.enums import CharacteristicType
-
 
 User = get_user_model()
 
 
 class CharacterCharacteristic(models.Model):
     characteristic = models.CharField(
-        max_length=4,
-        choices=CharacteristicType.choices,
-        unique=True
+        max_length=4, choices=CharacteristicType.choices, unique=True
     )
     character = models.ForeignKey(
         "Character",
@@ -52,9 +49,7 @@ class Mutation(models.Model):
 class Quirk(models.Model):
     name = models.CharField(max_length=255)
     home_world = models.ForeignKey(
-        "HomeWorld",
-        on_delete=models.CASCADE,
-        related_name="quirks"
+        "HomeWorld", on_delete=models.CASCADE, related_name="quirks"
     )
 
     def __str__(self):
@@ -72,9 +67,7 @@ class Skill(models.Model):
     name = models.CharField(max_length=64)
     type = models.CharField(max_length=64, choices=SkillType)
     characteristic = models.CharField(
-        max_length=4,
-        choices=CharacteristicType.choices,
-        unique=True
+        max_length=4, choices=CharacteristicType.choices, unique=True
     )
     descriptor = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -107,8 +100,7 @@ class CareerPath(models.Model):
     )
     starting_talents = models.ManyToManyField(
         "Talent",
-        db_table = "career_start_talent",
-
+        db_table="career_start_talent",
     )
     starting_gears = models.ManyToManyField(
         "Gear",
@@ -116,7 +108,7 @@ class CareerPath(models.Model):
     )
     starting_traits = models.ManyToManyField(
         "Trait",
-        db_table = "career_start_trait",
+        db_table="career_start_trait",
     )
 
     def __str__(self):
@@ -174,30 +166,26 @@ class HomeWorld(models.Model):
     description = models.TextField(blank=True)
     life_description = models.TextField(blank=True)
     pc_description = models.TextField(blank=True)
-    skills = models.ManyToManyField(
-        "Skill",
-        db_table = "homeworld_skill"
-    )
-    traits = models.ManyToManyField(
-        "Trait",
-        db_table = "homeworld_trait"
-    )
+    start_roll = models.PositiveIntegerField()
+    end_roll = models.PositiveIntegerField()
+    skills = models.ManyToManyField("Skill", db_table="home_world_skill")
+    traits = models.ManyToManyField("Trait", db_table="home_world_trait")
     career_paths = models.ManyToManyField(
-        "CareerPath",
-        db_table="homeworld_career_path"
+        "CareerPath", db_table="home_world_career_path"
     )
 
     def __str__(self):
         return self.name
 
     class Meta:
-        db_table = "homeworld"
+        db_table = "home_world"
 
 
 class HomeWorldClass(models.Model):
     """
     A planet-class represents a previous activity of character
     """
+
     name = models.CharField(max_length=64)
     description = models.TextField(blank=True)
     home_world = models.ForeignKey(
@@ -210,7 +198,7 @@ class HomeWorldClass(models.Model):
         return self.name
 
     class Meta:
-        db_table = "homeworld_class"
+        db_table = "home_world_class"
 
 
 class Armour(models.Model):
@@ -264,7 +252,6 @@ class Character(models.Model):
         blank=True,
     )
 
-
     skills = models.ManyToManyField(
         "Skill",
         db_table="character_skill",
@@ -292,8 +279,12 @@ class Character(models.Model):
         blank=True,
     )
     wound = models.IntegerField(verbose_name="HP", null=True, blank=True)
-    fate_point = models.IntegerField(verbose_name=_("Fate Points"), null=True, blank=True)
-    wealth = models.IntegerField(verbose_name=_("Initial capital"), null=True, blank=True)
+    fate_point = models.IntegerField(
+        verbose_name=_("Fate Points"), null=True, blank=True
+    )
+    wealth = models.IntegerField(
+        verbose_name=_("Initial capital"), null=True, blank=True
+    )
 
     # body
     sex = models.CharField(max_length=32, blank=True)
@@ -320,7 +311,7 @@ class Character(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name=_("Home World Class")
+        verbose_name=_("Home World Class"),
     )
 
     divination = models.ForeignKey(
@@ -328,7 +319,7 @@ class Character(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name=_("Imperial Divination")
+        verbose_name=_("Imperial Divination"),
     )
 
     mutations = models.ManyToManyField(
