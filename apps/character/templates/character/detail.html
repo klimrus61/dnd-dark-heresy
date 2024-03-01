@@ -1,0 +1,13 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>Detail Page</h1>
+    <p>{{ character.name }}</p>
+
+    <h3>HomeWorld:</h3>
+    <p>{{ character.home_world }}</p>
+    <p><a href="{% url "character-homeworld" character.pk %}">choose manually homeworld</a></p>
+    <p><a href="#">Random choose</a></p>
+
+
+{% endblock %}

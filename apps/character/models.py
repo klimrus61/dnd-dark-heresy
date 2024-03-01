@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
 from django.utils.translation import gettext as _
 
 from apps.character.enums import CharacteristicType
@@ -339,6 +340,9 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse_lazy("character-detail", kwargs={"pk": self.pk})
 
     class Meta:
         db_table = "character"

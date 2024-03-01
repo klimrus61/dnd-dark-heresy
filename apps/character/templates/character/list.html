@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base_generic.html" %}
 
-</body>
-</html>
+{% block content %}
+    <h1>List Page</h1>
+
+    <form action="{% url "character-create" %}" class="my-3">
+        <input type="submit" value="Create character"/>
+    </form>
+
+    <ul>
+        {% for character in characters %}
+            <li>
+                <p><a href="{% url 'character-detail' character.pk %}">{{ character.name }}</a></p>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
