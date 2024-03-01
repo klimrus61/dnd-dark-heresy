@@ -7,7 +7,13 @@
     <h3>HomeWorld:</h3>
     <p>{{ character.home_world }}</p>
     <p><a href="{% url "character-home-world" character.pk %}">choose manually home world</a></p>
-    <p><a href="#">Random choose</a></p>
+    <form class="col" action="{% url 'choose-random-home-world' character.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm">
+                Random choose
+            </button>
+    </form>
+
 
 
 {% endblock %}

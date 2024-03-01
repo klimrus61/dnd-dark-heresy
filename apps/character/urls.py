@@ -19,4 +19,5 @@ urlpatterns = [
         views.ChooseHomeWorldView.as_view(),
         name="character-home-world",
     ),
+    path("characters/<int:pk>/random-home-world/", views.RandomChooseHomeWorldView.as_view(), name="choose-random-home-world"),
 ]
